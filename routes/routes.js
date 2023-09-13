@@ -121,10 +121,38 @@ router.get('/endpoint7', async (req, res) => {
 
 router.get('/endpoint8', async (req, res) => {
     try {
-        
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Hamburguesas');
+        const query = { nombre: "Clásica" };
+        const hamburguesasCursor = await collection.find(query);
+        const hamburguesas = await hamburguesasCursor.toArray();
+
+        if (hamburguesas.length === 0) {
+            return res.status(400).json({
+                msg: "Hamburguesas no encontradas."
+            });
+        }
+
+        for (const hamburguesa of hamburguesas) {
+            await collection.updateOne(
+                { _id: hamburguesa._id },
+                { $push: { ingredientes: "Maiz" } }
+            );
+        }
+
+        client.close();
+
+        res.json({
+            hamburguesas,
+            msg: "Ingredientes actualizados."
+        });
     } catch (error) {
         console.log(error, "Error endpoint8.");
+        res.status(500).json({ error: "Error interno del servidor." });
     }
 });
+
 
 module.exports = router;
