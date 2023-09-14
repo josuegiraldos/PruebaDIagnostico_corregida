@@ -244,4 +244,22 @@ router.get('/endpoint13', async (req, res) => {
     }
 });
 
+router.get('/endpoint14', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Ingredientes');
+        const query = { descripcion: { $regex: /clásico/i }};
+        const result = await collection.find(query).toArray();
+        res.json({
+            msg: "Ingredientes que tienen la palabra 'clásico' en su descripción.",
+            result
+        });
+        client.close();
+    } catch (error) {
+        console.log(error, "Error en el endpoint 14.");
+    }
+});
+
 module.exports = router;
