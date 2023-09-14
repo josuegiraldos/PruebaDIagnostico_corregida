@@ -224,4 +224,24 @@ router.get('/endpoint12', async (req, res) => {
     }
 });
 
+router.get('/endpoint13', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Ingredientes');
+        const query = { nombre: "Pan" };
+        const result = await collection.updateOne(query, { $inc: { stock: 100 }});
+        const ingrediente = await collection.find(query).toArray();
+        res.json({
+            msg: "Stock del ingrediente 'Pan' incrementado en 100 unidades.",
+            result,
+            ingrediente
+        });
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint13.");
+    }
+});
+
 module.exports = router;
