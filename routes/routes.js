@@ -568,4 +568,34 @@ router.get('/endpoint31', async (req, res) => {
     }
 });
 
+router.get('/endpoint32', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Hamburguesas');
+        const result = await collection.aggregate([
+            {
+                $unwind: "$ingredientes"
+            },
+            {
+                $group: {
+                    _id: "$ingredientes",
+                    numHamburguesas: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { _id: 1 }
+            }
+        ]).toArray();
+        res.json({
+            msg: "Ingredientes y cantidad de hamburguesas.",
+            result
+        });
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint31.");
+    }
+});
+
 module.exports = router;
