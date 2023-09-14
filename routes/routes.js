@@ -386,4 +386,20 @@ router.get('/endpoint21', async (req, res) => {
     }
 });
 
+router.put('/endpoint22', async (req, res) => {
+    const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Ingredientes');
+        const query = { nombre: "Pan" };
+        const result = await collection.updateOne(query, { $set: { descripcion: "Pan fresco y crujiente."}});
+        const ingredientes = await collection.find().toArray();
+        res.json({
+            msg: "Actualizar la descripción del ingrediente 'Pan'.",
+            result,
+            ingredientes
+        })
+        client.close();
+});
+
 module.exports = router;
