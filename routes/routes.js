@@ -514,4 +514,24 @@ router.get('/endpoint28', async (req, res) => {
     }
 });
 
+router.delete('/endpoint29', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Chefs');
+        const query = { especialidad: "Cocina Vegetariana" };
+        const result = await collection.deleteOne(query);
+        res.json({
+            msg: "Eliminar Chef de la especialidad 'Cocina Vegetariana'.",
+            result
+        })
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint29.");
+    }
+});
+
+
+
 module.exports = router;
