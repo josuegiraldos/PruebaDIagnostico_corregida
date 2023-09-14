@@ -154,5 +154,22 @@ router.get('/endpoint8', async (req, res) => {
     }
 });
 
+router.get('/endpoint9', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Hamburguesas');
+        const query = { "ingredientes": "Pan integral"};
+        const result = await collection.find(query).toArray();
+        res.json({
+            msg: "Hamburguesas con pan integral",
+            result
+        })
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint9.");
+    }
+});
 
 module.exports = router;
