@@ -331,4 +331,24 @@ router.get('/endpoint18', async (req, res) => {
     }
 });
 
+router.post('/endpoint19', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Chefs');
+        const query = { nombre: "ChefD", especialidad: "Cocina asiática" };
+        const result = await collection.insertOne(query);
+        const chefs = await collection.find().toArray();
+        res.json({
+            msg: "Nuevo Chef.",
+            result,
+            chefs
+        });
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint19.");
+    }
+});
+
 module.exports = router;
