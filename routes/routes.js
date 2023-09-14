@@ -658,4 +658,50 @@ router.get('/endpoint34', async (req, res) => {
     }
 });
 
+router.get('/endpoint35', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Hamburguesas');
+        const result = await collection.aggregate([
+            {
+                $lookup: {
+                    from: "Chefs",
+                    localField: "chef",
+                    foreignField: "nombre",
+                    as: "chef"
+                }
+            },
+            {
+                $lookup: {
+                    from: "Ingredientes",
+                    localField: "ingredientes",
+                    foreignField: "nombre",
+                    as: "ingredientes"
+                }
+            },
+            {
+                $unwind: "$chef"
+            },
+            {
+                $unwind: "$ingredientes"
+            },
+            {
+                $group: {
+                    _id: "$chef",
+                    total: { $sum: "$ingredientes.precio" }
+                }
+            }
+        ]).toArray();
+        res.json({
+            msg: "Lista de chefs y costo total de ingredientes de todas las hamburguesas que han preparado.",
+            result
+        });
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint35.");
+    }
+});
+
 module.exports = router;
