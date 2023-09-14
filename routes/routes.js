@@ -594,7 +594,7 @@ router.get('/endpoint32', async (req, res) => {
         });
         client.close();
     } catch (error) {
-        console.log(error, "Error endpoint31.");
+        console.log(error, "Error endpoint32.");
     }
 });
 
