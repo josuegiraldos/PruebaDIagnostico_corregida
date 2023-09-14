@@ -460,4 +460,21 @@ router.get('/endpoint25', async (req, res) => {
     }
 });
 
+router.get('/endpoint26', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Ingredientes');
+        const result = await collection.find().sort({ nombre: 1 }).toArray();
+        res.json({
+            msg: "Ingredientes ordenados en orden alfabético.",
+            result
+        })
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint26.");
+    }
+});
+
 module.exports = router;
