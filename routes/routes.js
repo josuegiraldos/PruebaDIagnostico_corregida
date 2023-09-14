@@ -172,4 +172,21 @@ router.get('/endpoint9', async (req, res) => {
     }
 });
 
+router.get('/endpoint10', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Chefs');
+        const query = { "nombre": "ChefC" };
+        const result = await collection.updateOne(query, { $set: { especialidad: "Cocina internacional"}});
+        res.json({
+            msg: `Especialidad del Chef C actualizado.`,
+            result
+        })
+    } catch (error) {
+        console.log(error, "Error endpoint10.");
+    }
+});
+
 module.exports = router;
