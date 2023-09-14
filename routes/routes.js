@@ -494,4 +494,24 @@ router.get('/endpoint27', async (req, res) => {
     }
 });
 
+router.get('/endpoint28', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Hamburguesas');
+        const query = { categoria: { $regex: /clásica/i }};
+        const result = await collection.updateOne(query, { $push: { ingredientes: "Pepinillos" }});
+        const hamburguesa = await collection.find(query).toArray();
+        res.json({
+            msg: "Agregar el ingrediente 'Pepinillos' a las hamburguesas de la categoría 'Clásica'.",
+            result,
+            hamburguesa
+        })
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint28.");
+    }
+});
+
 module.exports = router;
