@@ -626,6 +626,6 @@ router.get('/endpoint33', async (req, res) => {
     } catch (error) {
         console.log(error, "Error endpoint 33.");
     }
-})
+});
 
 module.exports = router;
