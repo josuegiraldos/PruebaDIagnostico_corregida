@@ -550,4 +550,22 @@ router.get('/endpoint30', async (req, res) => {
     }
 });
 
+router.get('/endpoint31', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Hamburguesas');
+        const query = { categoria: { $regex: /gourmet/i }};
+        const result = await collection.find(query).sort({ precio: -1 }).toArray();
+        res.json({
+            msg: "Hamburguesas de la categoría 'gourmet' ordenadas según precio.",
+            result
+        });
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint31.");
+    }
+});
+
 module.exports = router;
