@@ -206,4 +206,22 @@ router.get('/endpoint11', async (req, res) => {
     }
 });
 
+router.get('/endpoint12', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Hamburguesas');
+        const query = { ingredientes: { $ne: "Queso cheddar" }};
+        const result = await collection.find(query).toArray();
+        res.json({
+            msg: "Hamburguesas que no tienen Queso cheddar en sus ingredientes.",
+            result
+        })
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint12.");
+    }
+});
+
 module.exports = router;
