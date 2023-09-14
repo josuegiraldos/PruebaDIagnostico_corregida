@@ -387,7 +387,8 @@ router.get('/endpoint21', async (req, res) => {
 });
 
 router.put('/endpoint22', async (req, res) => {
-    const client = new MongoClient(bases);
+    try {
+        const client = new MongoClient(bases);
         await client.connect();
         const db = client.db(nombrebase);
         const collection = db.collection('Ingredientes');
@@ -399,7 +400,28 @@ router.put('/endpoint22', async (req, res) => {
             result,
             ingredientes
         })
+        client.close();   
+    } catch (error) {
+        console.log(error, "Error endpoint22.");
+    }
+});
+
+router.get('/endpoint23', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Hamburguesas');
+        const query = { ingredientes: { $in: [ "Tomate", "Lechuga" ]}};
+        const result = await collection.find(query).toArray();
+        res.json({
+            msg: "Hamburguesas que tienen 'Tomate' o 'Lechuga' en sus ingredientes.",
+            result
+        })
         client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint23.");
+    }
 });
 
 module.exports = router;

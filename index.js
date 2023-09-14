@@ -11,5 +11,5 @@ const port = process.env.PORT256;
 app.use(express.json());
 
 app.listen(port, () => {
-    console.log("Servidor iniciado...");
+    console.log(`Servidor iniciado en puerto: ${port}`);
 })
