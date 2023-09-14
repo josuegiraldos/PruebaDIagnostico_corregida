@@ -280,4 +280,20 @@ router.get('/endpoint15', async (req, res) => {
     }
 });
 
+router.get('/endpoint16', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Chefs');
+        const result = await collection.countDocuments();
+        res.json({
+            msg: "Cantidad de chefs que hay en la base de datos.",
+            result
+        })
+    } catch (error) {
+        console.log(error, "Error endpoint16.");
+    }
+});
+
 module.exports = router;
