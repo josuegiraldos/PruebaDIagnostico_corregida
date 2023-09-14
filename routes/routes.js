@@ -189,4 +189,21 @@ router.get('/endpoint10', async (req, res) => {
     }
 });
 
+router.get('/endpoint11', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Ingredientes');
+        const result = await collection.findOne({}, { sort: { precio: -1 }});
+        res.json({
+            msg: "Ingrediente más caro.",
+            result
+        })
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint11.");
+    }
+});
+
 module.exports = router;
