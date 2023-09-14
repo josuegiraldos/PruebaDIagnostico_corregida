@@ -521,7 +521,7 @@ router.delete('/endpoint29', async (req, res) => {
         const db = client.db(nombrebase);
         const collection = db.collection('Chefs');
         const query = { especialidad: "Cocina Vegetariana" };
-        const result = await collection.deleteOne(query);
+        const result = await collection.deleteMany(query);
         res.json({
             msg: "Eliminar Chef de la especialidad 'Cocina Vegetariana'.",
             result
@@ -532,6 +532,22 @@ router.delete('/endpoint29', async (req, res) => {
     }
 });
 
-
+router.get('/endpoint30', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Hamburguesas');
+        const query = { ingredientes: { $size: 7 }};
+        const result = await collection.find(query).toArray();
+        res.json({
+            msg: "Hamburguesas que contienen exactamente 7 ingredientes.",
+            result
+        });
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint30.");
+    }
+});
 
 module.exports = router;
