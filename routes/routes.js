@@ -296,4 +296,22 @@ router.get('/endpoint16', async (req, res) => {
     }
 });
 
+router.get('/endpoint17', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Categorias');
+        const query = { descripcion: { $regex: /gourmet/i }};
+        const result = await collection.find(query).toArray();
+        res.json({
+            msg: "Categorías que tienen en su descripción la palabra 'gourmet'.",
+            result
+        });
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint17.");
+    }
+});
+
 module.exports = router;
