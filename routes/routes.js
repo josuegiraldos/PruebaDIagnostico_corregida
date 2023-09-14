@@ -424,4 +424,22 @@ router.get('/endpoint23', async (req, res) => {
     }
 });
 
+router.get('/enpoint24', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Chefs');
+        const query = { nombre: { $ne: "ChefA"}};
+        const result = await collection.find(query).toArray();
+        res.json({
+            msg: "Lista de chefs excepto: 'ChefA'.",
+            result
+        })
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint24.");
+    }
+});
+
 module.exports = router;
