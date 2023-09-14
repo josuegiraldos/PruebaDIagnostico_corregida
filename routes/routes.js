@@ -351,4 +351,21 @@ router.post('/endpoint19', async (req, res) => {
     }
 });
 
+router.get('/endpoint20', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Hamburguesas');
+        const result = await collection.find().sort({ precio: 1 }).toArray();
+        res.json({
+            msg: "Hamburguesas ordenadas ascendentemente según precio.",
+            result
+        });
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint20.");
+    }
+});
+
 module.exports = router;
