@@ -442,4 +442,22 @@ router.get('/enpoint24', async (req, res) => {
     }
 });
 
+router.get('/endpoint25', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Hamburguesas');
+        const query = { categoria: { $regex: /gourmet/i }};
+        const result = await collection.updateOne(query, { $inc: { precio: 2 }});
+        res.json({
+            msg: "Aumentar en 2 el precio de las hamburguesas de la categoría 'gourmet'.",
+            result
+        })
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint25.");
+    }
+});
+
 module.exports = router;
