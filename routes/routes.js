@@ -262,4 +262,22 @@ router.get('/endpoint14', async (req, res) => {
     }
 });
 
+router.get('/endpoint15', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Hamburguesas');
+        const query = { precio: { $lte: 9 }};
+        const result = await collection.find(query).toArray();
+        res.json({
+            msg: "Hamburguesas con precio menor o igual a $9.",
+            result
+        })
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint15.");
+    }
+});
+
 module.exports = router;
