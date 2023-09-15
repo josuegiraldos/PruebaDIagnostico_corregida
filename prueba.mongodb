@@ -1,15 +1,9 @@
 use ("Hamburgueseria")
 db.Hamburguesas.aggregate([
     {
-        $unwind: "$ingredientes"
-    },
-    {
         $group: {
-            "_id": "$chef",
-            "cantidad_ingredientes": { $sum: 1 }
+            "_id": "$categoria",
+            "precio_promedio": { $avg: "$precio" }
         }
-    },
-    {
-        $sort: { "cantidad_ingredientes": -1 }
     }
 ])

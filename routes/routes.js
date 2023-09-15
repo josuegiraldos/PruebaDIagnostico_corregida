@@ -812,4 +812,28 @@ router.get('/endpoint38', async (req, res) => {
     }
 });
 
+router.get('/endpoint39', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Hamburguesas');
+        const result = await collection.aggregate([
+            {
+                $group: {
+                    "_id": "$categoria",
+                    "precio_promedio": { $avg: "$precio" }
+                }
+            }
+        ]).toArray();
+        res.json({
+            msg: "Promedio precio hamburguesas por categoria.",
+            result
+        })
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint39.");
+    }
+});
+
 module.exports = router;
