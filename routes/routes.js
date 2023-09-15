@@ -783,4 +783,33 @@ router.get('/endpoint37', async (req, res) => {
     }
 });
 
+router.get('/endpoint38', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Hamburguesas');
+        const result = await collection.aggregate([
+            {
+                $unwind: "$ingredientes"
+            },
+            {
+                $group: {
+                    "_id": "$chef",
+                    "cantidad_ingredientes": { $sum: 1 }
+                }
+            },
+            {
+                $sort: { "cantidad_ingredientes": -1 }
+            }
+        ]).limit(1).toArray();
+        res.json({
+            msg: "Chef que ha preparado hamburguesas con el mayor número de ingredientes.",
+            result
+        })
+    } catch (error) {
+        console.log(error, "Error endpoint38.");
+    }
+});
+
 module.exports = router;
