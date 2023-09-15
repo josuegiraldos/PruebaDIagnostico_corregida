@@ -692,6 +692,11 @@ router.get('/endpoint35', async (req, res) => {
                     _id: "$chef",
                     total: { $sum: "$ingredientes.precio" }
                 }
+            },
+            {
+                $project: {
+                    "_id.especialidad": 0
+                }
             }
         ]).toArray();
         res.json({
@@ -740,5 +745,42 @@ router.get("/endpoint36", async (req, res) => {
       console.log(error, "Error endpoint36.");
     }
 })
+
+router.get('/endpoint37', async (req, res) => {
+    try {
+        const client = new MongoClient(bases);
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Hamburguesas');
+        const result = await collection.aggregate([
+            {
+                $lookup: {
+                  from: "Categorias",
+                  localField: "categoria",
+                  foreignField: "nombre",
+                  as: "descripcion_categoria"
+                }
+            },
+            {
+                $unwind: "$descripcion_categoria"
+            },
+            {
+                $project: {
+                    "_id": 0,
+                    "nombre": 1,
+                    "categoria": 1,
+                    "descripcion_categoria.descripcion": 1
+                }
+            }
+        ]).toArray();
+        res.json({
+            msg: "Hamburguesas con la descripción de su respectiva categoría.",
+            result
+        })
+        client.close();
+    } catch (error) {
+        console.log(error, "Error endpoint37.");
+    }
+});
 
 module.exports = router;

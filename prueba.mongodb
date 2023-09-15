@@ -1,0 +1,22 @@
+use ("Hamburgueseria")
+db.Hamburguesas.aggregate([
+    {
+        $lookup: {
+          from: "Categorias",
+          localField: "categoria",
+          foreignField: "nombre",
+          as: "descripcion_categoria"
+        }
+    },
+    {
+        $unwind: "$descripcion_categoria"
+    },
+    {
+        $project: {
+            "_id": 0,
+            "nombre": 1,
+            "categoria": 1,
+            "descripcion_categoria.descripcion": 1
+        }
+    }
+])
